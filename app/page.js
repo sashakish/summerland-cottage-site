@@ -110,12 +110,14 @@ export default function Page() {
             <label className="full"><span>Trip note</span><textarea rows="3" value={form.note} onChange={e => setForm({ ...form, note: e.target.value })} placeholder="Tell us what brings you to Summerland" /></label>
             {quote && <div className="quote full"><strong>{quote.nights} nights</strong><span>Estimated total {money(quote.subtotal)}</span><span>Deposit due now {money(quote.deposit)}</span></div>}
             <button className="button primary full" type="submit">Reserve with deposit</button>
+            <p className="fine-print full">Cancellation policy: free cancellation until 5 days before check-in. Cancellations after that may qualify for a partial refund.</p>
             {status && <p className="fine-print full">{status}</p>}
           </form>
           <div className="booking-details">
             <div className="property-facts"><span>2 bedrooms</span><span>1 bathroom</span><span>4 guests</span></div>
             <div className="mini-calendar"><div className="calendar-head"><strong>Availability</strong><span>{availability ? 'Loaded' : 'Loading...'}</span></div><div className="calendar-grid weekdays"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div><div className="calendar-grid dates">{days.map(d => <span key={d.date} title={d.note || d.source} className={d.available ? '' : 'blocked'}>{Number(d.date.slice(8,10))}<small>{d.available ? money(d.nightlyCents) : 'Booked'}</small></span>)}</div><div className="calendar-key"><span><i></i> Available</span><span><i className="blocked-key"></i> Booked/held</span></div></div>
             <div className="sleeping-card"><h3>Sleeping arrangements</h3><div><strong>Bedroom 1</strong><span>Queen bed</span></div><div><strong>Bedroom 2</strong><span>Double bed</span></div></div>
+            <div className="sleeping-card"><h3>Cancellation policy</h3><p>Free cancellation until 5 days before check-in. After that, cancellations may be eligible for a partial refund.</p></div>
           </div>
         </div>
       </section>
