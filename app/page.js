@@ -2,6 +2,20 @@
 
 import { useEffect, useMemo, useState } from 'react';
 
+
+const testimonials = [
+  { initials: 'E.', detail: 'San Francisco · 200+ stays', quote: `One of the best Airbnb stays I've ever had. The location is unbeatable, the cottage itself is immaculate, and we're coming back.` },
+  { initials: 'L.', detail: 'San Diego', quote: 'The cottage is impeccable, both in terms of decor and cleanliness. The host was extremely responsive, proactive and helpful.' },
+  { initials: 'S.', detail: 'Arizona', quote: 'This tops my list as the best place we have ever stayed. It truly is coastal living at its finest.' },
+  { initials: 'L.', detail: 'Montreal', quote: 'What a fantastic gem. Every detail was thought of ahead of time and taken care of.' },
+  { initials: 'K.', detail: 'San Francisco', quote: 'Phenomenal Airbnb experience. You can tell the hosts put a lot of time and effort into this place.' },
+  { initials: 'G.', detail: 'Stayed with a pet', quote: 'The place was spotless. The home was charming, cozy, and everything we wanted and needed.' },
+  { initials: 'L.', detail: 'New Jersey', quote: 'Extremely well equipped and immaculate, with a very short walk to the beach and town.' },
+  { initials: 'S.', detail: 'Walnut Creek', quote: 'A relaxing stay, and a 3 minute walk downhill to a beautiful beach. Would absolutely stay here again.' },
+  { initials: 'J.', detail: 'Vermont', quote: 'Everything is walkable. We had no reason to leave. Definitely recommend.' },
+  { initials: 'B.', detail: 'Idaho', quote: 'A real gem. Immaculate, beautifully decorated, well appointed, easy access to beach and retail in Summerland.' }
+];
+
 const photos = [
   '01-DQdubB9EYWm.jpg','02-DDSen_vSDH3.jpg','03-DDSSPt5vG2s.jpg','04-DASn_v1Rb9q.jpg','05-C_42knrR_KE.jpg','06-C_rHqDbS-hi.jpg','07-C_fHOr4x8pw.jpg','08-C_fG7UzxdfU.jpg','09-C_fGuTJRISW.jpg','10-C_fGm-Vxv6Y.jpg','11-C_fGcAuxS_g.jpg','12-C_fGQLURntp.jpg','13-C_fGHLFxA2y.jpg','14-C_fF5MoxELv.jpg','15-C_fFynLRpU7.jpg','16-C_blybbyval.jpg','17-C_blT9ZSqkz.jpg','18-C_Yw-nVS34y.jpg','19-C_YRTb1viE6.jpg','20-C_Xb3V6xxKT.jpg','21-C_XbqIvxDU6.jpg','22-C_XaQkLRELs.jpg'
 ];
@@ -71,7 +85,7 @@ export default function Page() {
   return <>
     <header className="site-header">
       <a className="brand" href="#top"><img src="/assets/instagram-profile.jpg" alt="Summerland Cottage" /><span>Summerland Cottage</span></a>
-      <nav><a href="#cottage">The Cottage</a><a href="#photos">Photos</a><a href="#booking">Reserve</a></nav>
+      <nav><a href="#cottage">The Cottage</a><a href="#reviews">Reviews</a><a href="#photos">Photos</a><a href="#booking">Reserve</a></nav>
     </header>
     <main id="top">
       <section className="hero">
@@ -89,6 +103,12 @@ export default function Page() {
         <p className="section-kicker">The cottage</p>
         <h2>Classic California character, refreshed for comfortable stays.</h2>
         <div className="intro-grid"><p>Summerland Cottage is built around the feeling of a real coastal home: warm details, easy gathering spaces, thoughtful touches, and a personal kind of hospitality guests remember.</p><ul className="feature-list"><li>2 bedrooms</li><li>1 bathroom</li><li>Up to 4 guests</li><li>Close to Montecito and Santa Barbara</li></ul></div>
+      </section>
+
+
+      <section className="testimonials" id="reviews">
+        <div className="section-heading"><p className="section-kicker">Guest love</p><h2>Specific, verified praise from recent Airbnb guests.</h2><p>Waterscape is rated 5.0 by 100+ guests and sits in Airbnb’s top 1% of eligible homes. These are short excerpts from real public reviews.</p></div>
+        <div className="review-grid">{testimonials.map((item, i) => <article key={`${item.initials}-${i}`} className={i === 0 ? 'featured-review' : ''}><div className="stars">★★★★★</div><p>“{item.quote}”</p><footer><strong>{item.initials}</strong><span>{item.detail}</span></footer></article>)}</div>
       </section>
 
       <section className="photo-section" id="photos">
