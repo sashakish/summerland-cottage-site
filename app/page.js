@@ -110,7 +110,7 @@ export default function Page() {
           <div className="booking-details">
             <div className="property-facts"><span>2 bedrooms</span><span>1 bathroom</span><span>4 guests</span></div>
             <div className="mini-calendar"><div className="calendar-head"><strong>Availability</strong><span>{availability ? 'Loaded' : 'Loading...'}</span></div><div className="calendar-grid weekdays"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div><div className="calendar-grid dates">{days.map(d => <span key={d.date} title={d.note || d.source} className={d.available ? '' : 'blocked'}>{Number(d.date.slice(8,10))}<small>{d.available ? money(d.nightlyCents) : 'Booked'}</small></span>)}</div><div className="calendar-key"><span><i></i> Available</span><span><i className="blocked-key"></i> Booked/held</span></div></div>
-            <div className="sleeping-card"><h3>Sleeping arrangements</h3><div><strong>Bedroom 1</strong><span>Queen bed</span></div><div><strong>Bedroom 2</strong><span>Queen bed</span></div></div>
+            <div className="sleeping-card"><h3>Sleeping arrangements</h3><div><strong>Bedroom 1</strong><span>Queen bed</span></div><div><strong>Bedroom 2</strong><span>Double bed</span></div></div>
           </div>
         </div>
       </section>
