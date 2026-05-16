@@ -1,0 +1,91 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Summerland Cottage serverless booking API
+
+Parameters:
+  SiteUrl:
+    Type: String
+    Default: https://summerland-cottage.example.com
+  AllowedOrigin:
+    Type: String
+    Default: '*'
+  StripeSecretKey:
+    Type: String
+    Default: ''
+    NoEcho: true
+  AirbnbIcalUrl:
+    Type: String
+    Default: ''
+    NoEcho: true
+  BookingConfigS3Key:
+    Type: String
+    Default: calendar/bookings.json
+
+Resources:
+  BookingConfigBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      VersioningConfiguration:
+        Status: Enabled
+
+  BookingApiFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        EntryPoints:
+          - lambda/booking-api.js
+        Minify: true
+        Target: es2022
+        Sourcemap: false
+    Properties:
+      Runtime: nodejs22.x
+      Handler: lambda/booking-api.handler
+      CodeUri: .
+      MemorySize: 256
+      Timeout: 10
+      Environment:
+        Variables:
+          BOOKING_CONFIG_S3_BUCKET: !Ref BookingConfigBucket
+          BOOKING_CONFIG_S3_KEY: !Ref BookingConfigS3Key
+          SITE_URL: !Ref SiteUrl
+          ALLOWED_ORIGIN: !Ref AllowedOrigin
+          STRIPE_SECRET_KEY: !Ref StripeSecretKey
+          AIRBNB_ICAL_URL: !Ref AirbnbIcalUrl
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Ref BookingConfigBucket
+      Events:
+        Availability:
+          Type: HttpApi
+          Properties:
+            Path: /availability
+            Method: GET
+        Checkout:
+          Type: HttpApi
+          Properties:
+            Path: /checkout
+            Method: POST
+        CorsPreflightAvailability:
+          Type: HttpApi
+          Properties:
+            Path: /availability
+            Method: OPTIONS
+        CorsPreflightCheckout:
+          Type: HttpApi
+          Properties:
+            Path: /checkout
+            Method: OPTIONS
+
+Outputs:
+  BookingApiUrl:
+    Description: API Gateway base URL for NEXT_PUBLIC_API_BASE_URL
+    Value: !Sub 'https://${ServerlessHttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}'
+  BookingConfigBucketName:
+    Description: Private S3 bucket for calendar configuration JSON
+    Value: !Ref BookingConfigBucket

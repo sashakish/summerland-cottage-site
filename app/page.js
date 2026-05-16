@@ -20,6 +20,11 @@ function addDaysIso(start, days) {
   return d.toISOString().slice(0, 10);
 }
 
+function apiUrl(path) {
+  const base = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, '') || '';
+  return base ? `${base}${path}` : `/api${path}`;
+}
+
 function nightsBetween(start, end) {
   if (!start || !end) return 0;
   return Math.round((new Date(`${end}T00:00:00Z`) - new Date(`${start}T00:00:00Z`)) / 86400000);
@@ -33,7 +38,7 @@ export default function Page() {
   useEffect(() => {
     const start = todayIso();
     const end = addDaysIso(start, 90);
-    fetch(`/api/availability?start=${start}&end=${end}`).then(r => r.json()).then(setAvailability).catch(() => setStatus('Availability could not load.'));
+    fetch(apiUrl(`/availability?start=${start}&end=${end}`)).then(r => r.json()).then(setAvailability).catch(() => setStatus('Availability could not load.'));
   }, []);
 
   const quote = useMemo(() => {
@@ -48,7 +53,7 @@ export default function Page() {
   async function submit(e) {
     e.preventDefault();
     setStatus('Checking dates...');
-    const res = await fetch('/api/checkout', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(form) });
+    const res = await fetch(apiUrl('/checkout'), { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(form) });
     const data = await res.json();
     if (data.url) {
       window.location.href = data.url;
