@@ -23,7 +23,7 @@
       <a href="#cottage">The Cottage</a>
       <a href="#photos">Photos</a>
       <a href="#experience">Experience</a>
-      <a href="#booking">Book</a>
+      <a href="#booking">Book Direct</a>
     </nav>
   </header>
 
@@ -34,7 +34,7 @@
         <h1>A lovingly restored beach cottage for Santa Barbara coast days.</h1>
         <p class="lede">A charming, family-owned cottage in Summerland, restored by a father and sons trio. Warm, personal, and close to Montecito, cafés, antique shops, coastal drives, and the beach.</p>
         <div class="actions">
-          <a class="button primary" href="https://airbnb.com/h/summerland-cottage" rel="noopener">View on Airbnb</a>
+          <a class="button primary" href="#booking">Check availability</a>
           <a class="button secondary" href="#photos">See photos</a>
         </div>
         <div class="trust-row" aria-label="Property highlights">
@@ -133,12 +133,62 @@
     </section>
 
     <section class="booking" id="booking">
-      <p class="section-kicker">Book the cottage</p>
-      <h2>Planning a Summerland stay?</h2>
-      <p>View the listing, check availability, and message us for the dates you have in mind.</p>
-      <div class="actions centered">
-        <a class="button primary" href="https://airbnb.com/h/summerland-cottage" rel="noopener">Open Airbnb listing</a>
-        <a class="button secondary" href="https://www.instagram.com/summerland.cottage/" rel="noopener">Message on Instagram</a>
+      <p class="section-kicker">Book direct</p>
+      <h2>Independent booking, no platform detour.</h2>
+      <p>Choose your dates, guests, and any note. The request opens a direct booking email so availability and pricing can be confirmed without sending guests back through a third-party platform.</p>
+      <div class="booking-shell">
+        <form class="booking-card" id="booking-form">
+          <label>
+            <span>Check-in</span>
+            <input id="check-in" name="check-in" type="date" required />
+          </label>
+          <label>
+            <span>Check-out</span>
+            <input id="check-out" name="check-out" type="date" required />
+          </label>
+          <label>
+            <span>Guests</span>
+            <select id="guests" name="guests">
+              <option>1 guest</option>
+              <option selected>2 guests</option>
+              <option>3 guests</option>
+              <option>4 guests</option>
+            </select>
+          </label>
+          <label>
+            <span>Coupon code</span>
+            <input id="coupon" name="coupon" type="text" placeholder="Optional" />
+          </label>
+          <label class="full">
+            <span>Trip note</span>
+            <textarea id="trip-note" name="trip-note" rows="3" placeholder="Tell us what brings you to Summerland"></textarea>
+          </label>
+          <button class="button primary full" type="submit">Check Availability</button>
+          <p class="fine-print">Direct inquiry only. Final availability, rate, taxes, and house rules are confirmed before booking.</p>
+        </form>
+        <div class="booking-details">
+          <div class="property-facts" aria-label="Property details">
+            <span>2 bedrooms</span>
+            <span>1 bathroom</span>
+            <span>4 guests</span>
+          </div>
+          <div class="mini-calendar" aria-label="Availability preview">
+            <div class="calendar-head"><strong>Availability preview</strong><span>Direct request</span></div>
+            <div class="calendar-grid weekdays"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div>
+            <div class="calendar-grid dates">
+              <span class="muted-day">26</span><span class="muted-day">27</span><span class="muted-day">28</span><span class="muted-day">29</span><span class="muted-day">30</span><span>1</span><span>2</span>
+              <span>3</span><span>4</span><span>5</span><span>6</span><span class="blocked">7</span><span class="blocked">8</span><span>9</span>
+              <span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span class="featured">15</span><span class="featured">16</span>
+              <span>17</span><span>18</span><span>19</span><span>20</span><span>21</span><span>22</span><span>23</span>
+            </div>
+            <div class="calendar-key"><span><i></i> Available</span><span><i class="blocked-key"></i> Ask first</span></div>
+          </div>
+          <div class="sleeping-card">
+            <h3>Sleeping arrangements</h3>
+            <div><strong>Bedroom 1</strong><span>Queen bed</span></div>
+            <div><strong>Bedroom 2</strong><span>Queen bed</span></div>
+          </div>
+        </div>
       </div>
     </section>
   </main>
@@ -147,5 +197,6 @@
     <p>Summerland Cottage · Summerland, California</p>
     <a href="https://www.instagram.com/summerland.cottage/" rel="noopener">@summerland.cottage</a>
   </footer>
+  <script src="app.js"></script>
 </body>
 </html>
