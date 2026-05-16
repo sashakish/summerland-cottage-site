@@ -1,5 +1,5 @@
 import Stripe from 'stripe';
-import { getAvailabilityPayload, validateStay } from '../lib/booking.js';
+import { appendConfirmedBooking, getAvailabilityPayload, validateStay } from '../lib/booking.js';
 
 const corsHeaders = {
   'access-control-allow-origin': process.env.ALLOWED_ORIGIN || '*',
@@ -20,10 +20,46 @@ function eventPath(event) {
   return event.rawPath || event.path || '/';
 }
 
+function rawBody(event) {
+  if (!event.body) return '';
+  return event.isBase64Encoded ? Buffer.from(event.body, 'base64').toString('utf8') : event.body;
+}
+
 function parseBody(event) {
-  if (!event.body) return {};
-  const body = event.isBase64Encoded ? Buffer.from(event.body, 'base64').toString('utf8') : event.body;
-  return JSON.parse(body);
+  const body = rawBody(event);
+  return body ? JSON.parse(body) : {};
+}
+
+function eventHeader(event, name) {
+  const headers = event.headers || {};
+  const match = Object.entries(headers).find(([key]) => key.toLowerCase() === name.toLowerCase());
+  return match?.[1];
+}
+
+async function handleStripeWebhook(event) {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_placeholder');
+  const payload = rawBody(event);
+  const signature = eventHeader(event, 'stripe-signature');
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  const stripeEvent = webhookSecret
+    ? stripe.webhooks.constructEvent(payload, signature, webhookSecret)
+    : JSON.parse(payload);
+
+  if (stripeEvent.type !== 'checkout.session.completed') {
+    return json(200, { received: true, ignored: stripeEvent.type });
+  }
+
+  const session = stripeEvent.data.object;
+  const { checkIn, checkOut, name = '', email = '' } = session.metadata || {};
+  await appendConfirmedBooking({
+    checkIn,
+    checkOut,
+    source: 'direct-site',
+    note: `Direct site booking${name ? ` for ${name}` : ''}${email ? ` (${email})` : ''}`,
+    stripeSessionId: session.id
+  });
+
+  return json(200, { received: true, booked: { checkIn, checkOut } });
 }
 
 export async function handler(event) {
@@ -36,6 +72,10 @@ export async function handler(event) {
     if (method === 'GET' && pathname.endsWith('/availability')) {
       const params = event.queryStringParameters || {};
       return json(200, await getAvailabilityPayload({ start: params.start, end: params.end }));
+    }
+
+    if (method === 'POST' && pathname.endsWith('/stripe-webhook')) {
+      return await handleStripeWebhook(event);
     }
 
     if (method === 'POST' && pathname.endsWith('/checkout')) {
@@ -67,7 +107,7 @@ export async function handler(event) {
             }
           }
         }],
-        metadata: { checkIn, checkOut, guests: String(guests), name, note },
+        metadata: { checkIn, checkOut, guests: String(guests), name, email, note },
         success_url: `${siteUrl}/?booking=success`,
         cancel_url: `${siteUrl}/?booking=cancelled`
       });

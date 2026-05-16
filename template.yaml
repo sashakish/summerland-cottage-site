@@ -17,6 +17,10 @@ Parameters:
     Type: String
     Default: ''
     NoEcho: true
+  StripeWebhookSecret:
+    Type: String
+    Default: ''
+    NoEcho: true
   BookingConfigS3Key:
     Type: String
     Default: calendar/bookings.json
@@ -56,9 +60,10 @@ Resources:
           SITE_URL: !Ref SiteUrl
           ALLOWED_ORIGIN: !Ref AllowedOrigin
           STRIPE_SECRET_KEY: !Ref StripeSecretKey
+          STRIPE_WEBHOOK_SECRET: !Ref StripeWebhookSecret
           AIRBNB_ICAL_URL: !Ref AirbnbIcalUrl
       Policies:
-        - S3ReadPolicy:
+        - S3CrudPolicy:
             BucketName: !Ref BookingConfigBucket
       Events:
         Availability:
@@ -76,10 +81,20 @@ Resources:
           Properties:
             Path: /availability
             Method: OPTIONS
+        StripeWebhook:
+          Type: HttpApi
+          Properties:
+            Path: /stripe-webhook
+            Method: POST
         CorsPreflightCheckout:
           Type: HttpApi
           Properties:
             Path: /checkout
+            Method: OPTIONS
+        CorsPreflightStripeWebhook:
+          Type: HttpApi
+          Properties:
+            Path: /stripe-webhook
             Method: OPTIONS
 
 Outputs:
