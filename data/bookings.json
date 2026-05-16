@@ -1,0 +1,11 @@
+{
+  "blockedDates": [
+    { "start": "2026-05-24", "end": "2026-05-27", "source": "owner-hold", "note": "Sample owner hold" },
+    { "start": "2026-06-06", "end": "2026-06-09", "source": "booked", "note": "Sample booked stay" }
+  ],
+  "baseNightlyCents": 39500,
+  "cleaningFeeCents": 18000,
+  "depositPercent": 0.30,
+  "minimumNights": 2,
+  "maxGuests": 4
+}

@@ -1,29 +1,27 @@
-# Summerland Cottage Site
+# Summerland Cottage Booking Engine
 
-Static landing page scaffold for the Summerland Cottage direct-booking site.
+Next.js booking engine for Summerland Cottage.
 
-## Current image status
+## What works
 
-Instagram exposes only public profile metadata from this machine/session. The account has 22 posts, but the post grid is behind an Instagram login wall, so only `assets/instagram-profile.jpg` was downloadable without credentials.
+- Live availability API: `/api/availability`
+- Manual blocked dates in `data/bookings.json`
+- Optional Airbnb iCal sync with `AIRBNB_ICAL_URL`
+- Stay validation: minimum nights, max guests, blocked dates
+- Deposit calculation
+- Stripe Checkout endpoint: `/api/checkout`
+- Demo mode when Stripe keys are missing
 
-Once logged in or exported, put the Instagram post images here:
+## Deploy
 
-```text
-assets/instagram/
-  01-hero.jpg
-  02-living-room.jpg
-  03-kitchen.jpg
-  ...
-```
+Deploy to Vercel or another host that supports Next.js API routes. GitHub Pages cannot run the booking/payment engine.
 
-Then replace the placeholder gallery blocks in `index.html` with real `<img>` tags.
-
-## Preview
-
-Open `index.html` in a browser, or run:
+Required environment variables for live deposits:
 
 ```bash
-python3 -m http.server 8080
+STRIPE_SECRET_KEY=sk_live_or_test_...
+NEXT_PUBLIC_SITE_URL=https://your-booking-domain.com
+AIRBNB_ICAL_URL=https://www.airbnb.com/calendar/ical/...
 ```
 
-from this folder.
+Optional next step: add a Stripe webhook to persist confirmed reservations after successful payment.
