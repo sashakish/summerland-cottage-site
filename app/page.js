@@ -107,8 +107,10 @@ export default function Page() {
 
 
       <section className="testimonials" id="reviews">
-        <div className="section-heading"><p className="section-kicker">Guest love</p><h2>Specific, verified praise from recent Airbnb guests.</h2><p>Waterscape is rated 5.0 by 100+ guests and sits in Airbnb’s top 1% of eligible homes. These are short excerpts from real public reviews.</p></div>
-        <div className="review-grid">{testimonials.map((item, i) => <article key={`${item.initials}-${i}`} className={i === 0 ? 'featured-review' : ''}><div className="stars">★★★★★</div><p>“{item.quote}”</p><footer><strong>{item.initials}</strong><span>{item.detail}</span></footer></article>)}</div>
+        <div className="testimonial-label"><span>★★★★★ 5.0 · 100+ Airbnb reviews · Top 1% guest favorite</span></div>
+        <div className="review-marquee" aria-label="Guest review highlights">
+          <div className="review-track">{[...testimonials, ...testimonials].map((item, i) => <article key={`${item.initials}-${i}`}><p>“{item.quote}”</p><footer><strong>{item.initials}</strong><span>{item.detail}</span></footer></article>)}</div>
+        </div>
       </section>
 
       <section className="photo-section" id="photos">
