@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 
 const testimonials = [
@@ -48,6 +48,24 @@ export default function Page() {
   const [availability, setAvailability] = useState(null);
   const [form, setForm] = useState({ checkIn: '', checkOut: '', guests: '2', name: '', email: '', note: '' });
   const [status, setStatus] = useState('');
+  const [testimonialIndex, setTestimonialIndex] = useState(0);
+  const touchStartX = useRef(null);
+
+  function showTestimonial(index) {
+    setTestimonialIndex((index + testimonials.length) % testimonials.length);
+  }
+
+  function handleTouchStart(e) {
+    touchStartX.current = e.touches[0].clientX;
+  }
+
+  function handleTouchEnd(e) {
+    if (touchStartX.current === null) return;
+    const diff = e.changedTouches[0].clientX - touchStartX.current;
+    touchStartX.current = null;
+    if (Math.abs(diff) < 45) return;
+    showTestimonial(testimonialIndex + (diff < 0 ? 1 : -1));
+  }
 
   useEffect(() => {
     const start = todayIso();
@@ -80,6 +98,13 @@ export default function Page() {
     setStatus(data.error || 'Could not start checkout.');
   }
 
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setTestimonialIndex(index => (index + 1) % testimonials.length);
+    }, 8000);
+    return () => window.clearInterval(timer);
+  }, []);
+
   const days = availability?.days?.slice(0, 42) || [];
 
   return <>
@@ -108,9 +133,14 @@ export default function Page() {
 
       <section className="testimonials" id="reviews">
         <div className="testimonial-label"><span>★★★★★ 5.0 · 100+ Airbnb reviews · Top 1% guest favorite</span></div>
-        <div className="review-marquee" aria-label="Guest review highlights">
-          <div className="review-track">{[...testimonials, ...testimonials].map((item, i) => <article key={`${item.initials}-${i}`}><p>“{item.quote}”</p><footer><strong>{item.initials}</strong><span>{item.detail}</span></footer></article>)}</div>
+        <div className="testimonial-carousel" aria-label="Guest review highlights">
+          <button className="testimonial-arrow" type="button" onClick={() => showTestimonial(testimonialIndex - 1)} aria-label="Previous review">‹</button>
+          <div className="testimonial-window" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+            <div className="review-track" style={{ transform: `translateX(-${testimonialIndex * 100}%)` }}>{testimonials.map((item, i) => <article key={`${item.initials}-${i}`} aria-hidden={i !== testimonialIndex}><p>“{item.quote}”</p><footer><strong>{item.initials}</strong><span>{item.detail}</span></footer></article>)}</div>
+          </div>
+          <button className="testimonial-arrow" type="button" onClick={() => showTestimonial(testimonialIndex + 1)} aria-label="Next review">›</button>
         </div>
+        <div className="testimonial-dots" aria-label="Choose review">{testimonials.map((item, i) => <button key={`${item.initials}-dot-${i}`} type="button" className={i === testimonialIndex ? 'active' : ''} onClick={() => showTestimonial(i)} aria-label={`Show review ${i + 1}`}></button>)}</div>
       </section>
 
       <section className="photo-section" id="photos">
